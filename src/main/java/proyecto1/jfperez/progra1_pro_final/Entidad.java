@@ -10,24 +10,39 @@ package proyecto1.jfperez.progra1_pro_final;
  * @author josep
  */
 public class Entidad {
+    
+    /**
+     * Cantidad de caracteres
+     */
+    public static final int cantidadCaracteres = 25;
+    
+    /**
+     * Tamaño de registro de entidad
+     */
+    public static final int SIZE = Integer.BYTES + (Character.BYTES * cantidadCaracteres);
 
-    private int indice;
+    /**
+     * Indice de la entidad.
+     */
+    private Integer indice;
+    
+    /**
+     * Nombre de la entidad.
+     */
     private String nombre;
-    private int cantidad;
-    private int posicion;
 
     /**
      * @return the indice
      */
-    public int getIndice() {
+    public Integer getIndice() {
         return indice;
     }
 
     /**
      * @param indice the indice to set
      */
-    public void setIndice(int indice) {
-        this.indice = indice;
+    public void setIndice(Integer indice) {
+        this.indice = indice;        
     }
 
     /**
@@ -43,35 +58,4 @@ public class Entidad {
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
-
-    /**
-     * @return the cantidad
-     */
-    public int getCantidad() {
-        return cantidad;
-    }
-
-    /**
-     * @param cantidad the cantidad to set
-     */
-    public void setCantidad(int cantidad) {
-        this.cantidad = cantidad;
-    }
-
-    /**
-     * @return the posicion
-     */
-    public int getPosicion() {
-        return posicion;
-    }
-
-    /**
-     * @param posicion the posicion to set
-     */
-    public void setPosicion(int posicion) {
-        this.posicion = posicion;
-    }
-    
-    
-    
 }
