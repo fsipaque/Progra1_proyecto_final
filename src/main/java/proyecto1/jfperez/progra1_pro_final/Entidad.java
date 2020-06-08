@@ -80,6 +80,14 @@ public class Entidad {
         this.atributos = atributos;
     }
     
+    /**
+     * Obtener el nombre del archivo basado en el nombre de la entidad.
+     * @return 
+     */
+    public String nombreArchivo() {
+        return this.nombre.trim().replaceAll("\\s+","");
+    }
+    
     @Override
     public String toString() {
         return "Entidad[" + "indice: " + this.indice + ", nombre:" + this.nombre ;

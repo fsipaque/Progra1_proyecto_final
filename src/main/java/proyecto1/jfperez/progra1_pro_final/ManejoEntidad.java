@@ -7,6 +7,7 @@ package proyecto1.jfperez.progra1_pro_final;
 
 
 import java.io.EOFException;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
@@ -122,9 +123,6 @@ public class ManejoEntidad {
                 return "Ya existe una entidad con el nombre deseado.";
             }
         } else {
-            System.out.println("***********");
-            System.out.println(entidad.getIndice());
-            System.out.println(entidad.getNombre());
             if (!this.existe(entidad.getIndice(), entidad.getNombre())) {
                 if(this.getEntidades().get(entidad.getIndice()) != null) {
                     int posicion = Entidad.SIZE * entidad.getIndice();
@@ -282,6 +280,19 @@ public class ManejoEntidad {
             }
         }
         return false;
-    }    
+    }
+
+    /**
+     * Función para validar si está vacío el archivo.
+     */
+    public boolean estaArchivoVacio() {
+        try {
+            RandomAccessFile archivo = new RandomAccessFile(this.entidad.nombreArchivo() + ".dat", "rw");
+            return !(archivo.length() > 0);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return false;
+        }        
+    }
     
 }

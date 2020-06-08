@@ -492,18 +492,24 @@ public class Principal extends javax.swing.JFrame {
         this.entidad = this.manejoEntidad.obtener((Integer)this.tblEntidades.getValueAt(rowEntidad,0));
         this.txtNombreEntidad.setText(this.entidad.getNombre());
         this.limpiarAtributo();
-        this.setAtributos();
-        this.btnEliminarEntidad.setEnabled(true);        
+        this.setAtributos();        
+        boolean archivoVacio = this.manejoEntidad.estaArchivoVacio();
+        this.btnGuardarEntidad.setEnabled(archivoVacio);
+        this.btnEliminarEntidad.setEnabled(archivoVacio);
+        this.btnGuardarAtributo.setEnabled(archivoVacio);
+        this.btnEliminarAtributo.setEnabled(archivoVacio);
     }//GEN-LAST:event_tblEntidadesMouseClicked
 
     private void tblAtributosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblAtributosMouseClicked
         // TODO add your handling code here:
         this.rowAtributo = this.tblAtributos.rowAtPoint(evt.getPoint());
-        this.atributo = this.manejoAtributo.obtener((Integer)this.tblAtributos.getValueAt(rowEntidad,0));      
+        this.atributo = this.manejoAtributo.obtener((Integer)this.tblAtributos.getValueAt(rowAtributo,0));      
         this.txtNombreAtributo.setText(this.atributo.getNombre());                
         this.cmbTipoDato.setSelectedItem((String) Atributo.getTipoToString(this.atributo.getTipo()));
         this.txtLongitud.setText(this.atributo.getLongitud().toString());
-        this.btnEliminarAtributo.setEnabled(true);
+        boolean archivoVacio = this.manejoEntidad.estaArchivoVacio();        
+        this.btnGuardarAtributo.setEnabled(archivoVacio);
+        this.btnEliminarAtributo.setEnabled(archivoVacio);
     }//GEN-LAST:event_tblAtributosMouseClicked
 
     private void btnGuardarAtributoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarAtributoActionPerformed
@@ -532,8 +538,10 @@ public class Principal extends javax.swing.JFrame {
                     this.atributo.setLongitud(Integer.parseInt(this.txtLongitud.getText()));
                     this.atributo.setEntidad(this.entidad.getIndice());
                     String mensaje = this.manejoAtributo.guardar(this.atributo);
-                    if (this.manejoAtributo.getAtributo() != null) {
-                        modelAtributo.addRow(new Object[]{this.atributo.getIndice(), this.atributo.getNombre(), Atributo.getTipoToString(this.atributo.getTipo()), this.atributo.getLongitud()});
+                    if (this.manejoAtributo.getAtributo() != null) {                        
+                        this.modelAtributo.setValueAt(this.txtNombreAtributo.getText(), this.rowAtributo, 1); // Nombre
+                        this.modelAtributo.setValueAt(Atributo.getTipoToString(this.cmbTipoDato.getSelectedIndex()), this.rowAtributo, 2); // Tipo
+                        this.modelAtributo.setValueAt(this.txtLongitud.getText(), this.rowAtributo, 3); // Longitud
                         this.limpiarAtributo();
                     }
                     JOptionPane.showMessageDialog(this, mensaje);
