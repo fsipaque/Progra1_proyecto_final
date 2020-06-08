@@ -80,5 +80,8 @@ public class Entidad {
         this.atributos = atributos;
     }
     
-    
+    @Override
+    public String toString() {
+        return "Entidad[" + "indice: " + this.indice + ", nombre:" + this.nombre ;
+    }
 }

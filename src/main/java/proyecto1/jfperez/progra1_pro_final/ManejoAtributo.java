@@ -74,7 +74,7 @@ public class ManejoAtributo {
      * @return 
      */
     public Atributo obtener(Integer indice) {        
-        int posicion = Entidad.SIZE * indice;       
+        int posicion = Atributo.SIZE * indice;       
         this.atributo = new Atributo();
         try {
             getArchivo().seek(posicion);
@@ -98,12 +98,12 @@ public class ManejoAtributo {
      * @param atributo
      * @return 
      */
-    public String guardar(Atributo atributo) {
+    public String guardar(Atributo atributo) {        
         if (atributo.getIndice() == null) { // registro nuevo
             if (!this.existe(atributo.getNombre())) {
                 int indice = this.atributos.size();
                 atributo.setIndice(indice);
-                int posicion = Entidad.SIZE * indice;
+                int posicion = Atributo.SIZE * indice;
                 try {
                     getArchivo().seek(posicion);
                     getArchivo().writeInt(indice);
@@ -124,12 +124,9 @@ public class ManejoAtributo {
                 return "Ya existe un atributo con el nombre deseado.";
             }
         } else {
-            System.out.println("***********");
-            System.out.println(atributo.getIndice());
-            System.out.println(atributo.getNombre());
             if (!this.existe(atributo.getIndice(), atributo.getNombre())) {
                 if(this.atributos.get(atributo.getIndice()) != null) {
-                    int posicion = Entidad.SIZE * atributo.getIndice();
+                    int posicion = Atributo.SIZE * atributo.getIndice();
                     try {
                         this.getArchivo().seek(posicion);
                         getArchivo().writeInt(atributo.getIndice());
@@ -163,7 +160,7 @@ public class ManejoAtributo {
      */
     public String eliminar(int indice) {
         if(atributos.get(indice) != null) {
-            int posicion = Entidad.SIZE * indice;
+            int posicion = Atributo.SIZE * indice;
             try {
                 getArchivo().seek(posicion);
                 getArchivo().writeInt(-1);
@@ -197,9 +194,9 @@ public class ManejoAtributo {
                 a = new Atributo();
                 a.setIndice(getArchivo().readInt());
                 a.setNombre(leerString());
-                a.setTipo(-1);
-                a.setLongitud(-1);
-                a.setEntidad(-1);
+                a.setTipo(getArchivo().readInt());
+                a.setLongitud(getArchivo().readInt());
+                a.setEntidad(getArchivo().readInt());
                 atributos.add(a);
             }
         } catch (EOFException e) {
@@ -220,9 +217,9 @@ public class ManejoAtributo {
         if (linea != null) {
             buffer = new StringBuffer(linea);
         } else {
-            buffer = new StringBuffer(Entidad.cantidadCaracteres);
+            buffer = new StringBuffer(Atributo.cantidadCaracteres);
         }
-        buffer.setLength(Entidad.cantidadCaracteres);
+        buffer.setLength(Atributo.cantidadCaracteres);
         getArchivo().writeChars(buffer.toString());
     }
     
@@ -232,7 +229,7 @@ public class ManejoAtributo {
      * @throws IOException 
      */
     private String leerString() throws IOException {
-        char[] s = new char[Entidad.cantidadCaracteres];
+        char[] s = new char[Atributo.cantidadCaracteres];
         for (int i = 0; i < s.length; i++) {
             s[i] = getArchivo().readChar();
         }
@@ -240,13 +237,15 @@ public class ManejoAtributo {
     }
 
     
-    public List<Atributo> obtenerPorEntidad(Integer entidad) {
+    public List<Atributo> obtenerPorEntidad(Integer entidad) {        
         List<Atributo> resultado = new ArrayList();
-        for(Atributo atributo: this.atributos){
-            if (atributo.getEntidad().equals(entidad)){
+        for(Atributo atributo: this.atributos){        
+            System.out.println("*************");
+            System.out.println(atributo);
+            if (atributo.getEntidad().equals(entidad)){                
                 resultado.add(atributo);
             }
-        }
+        }        
         return resultado;
     }
     

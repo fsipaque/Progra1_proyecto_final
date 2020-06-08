@@ -94,7 +94,9 @@ public class Principal extends javax.swing.JFrame {
     }
 
     private void setAtributos() {
-        List<Atributo> attrs = this.manejoAtributo.obtenerPorEntidad(this.entidad.getIndice());
+        List<Atributo> attrs = this.manejoAtributo.obtenerPorEntidad(this.entidad.getIndice());        
+        modelAtributo.getDataVector().removeAllElements();
+        modelAtributo.fireTableDataChanged();
         this.entidad.setAtributos(attrs);
         for (Atributo atributo: attrs) {
             if (atributo.getIndice() != -1) {
@@ -498,7 +500,7 @@ public class Principal extends javax.swing.JFrame {
         // TODO add your handling code here:
         this.rowAtributo = this.tblAtributos.rowAtPoint(evt.getPoint());
         this.atributo = this.manejoAtributo.obtener((Integer)this.tblAtributos.getValueAt(rowEntidad,0));      
-        this.txtNombreEntidad.setText(this.entidad.getNombre());                
+        this.txtNombreAtributo.setText(this.atributo.getNombre());                
         this.cmbTipoDato.setSelectedItem((String) Atributo.getTipoToString(this.atributo.getTipo()));
         this.txtLongitud.setText(this.atributo.getLongitud().toString());
         this.btnEliminarAtributo.setEnabled(true);
@@ -506,7 +508,7 @@ public class Principal extends javax.swing.JFrame {
 
     private void btnGuardarAtributoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarAtributoActionPerformed
         // TODO add your handling code here:
-        if (this.txtNombreAtributo.getText().equals("") || this.cmbTipoDato == null || this.txtLongitud.equals("")) {
+        if (this.txtNombreAtributo.getText().equals("") || this.cmbTipoDato.getSelectedItem() == null || this.txtLongitud.getText().equals("")) {
             JOptionPane.showMessageDialog(this, "Todos los campos son obligatorios.");
         } else {
             if (this.txtNombreEntidad.getText().length() > Entidad.cantidadCaracteres ){
@@ -515,7 +517,7 @@ public class Principal extends javax.swing.JFrame {
                 if (this.atributo == null) { // registro nuevo
                     this.atributo = new Atributo();
                     this.atributo.setNombre(this.txtNombreAtributo.getText());
-                    this.atributo.setTipo(Atributo.getTipoToInteger(this.cmbTipoDato.getSelectedItem().toString()));
+                    this.atributo.setTipo(this.cmbTipoDato.getSelectedIndex());
                     this.atributo.setLongitud(Integer.parseInt(this.txtLongitud.getText()));
                     this.atributo.setEntidad(this.entidad.getIndice());
                     String mensaje = this.manejoAtributo.guardar(this.atributo);
@@ -526,7 +528,7 @@ public class Principal extends javax.swing.JFrame {
                     JOptionPane.showMessageDialog(this, mensaje);                    
                 } else { // actualizar registro
                     this.atributo.setNombre(this.txtNombreAtributo.getText());
-                    this.atributo.setTipo(Atributo.getTipoToInteger(this.cmbTipoDato.getSelectedItem().toString()));
+                    this.atributo.setTipo(this.cmbTipoDato.getSelectedIndex());
                     this.atributo.setLongitud(Integer.parseInt(this.txtLongitud.getText()));
                     this.atributo.setEntidad(this.entidad.getIndice());
                     String mensaje = this.manejoAtributo.guardar(this.atributo);

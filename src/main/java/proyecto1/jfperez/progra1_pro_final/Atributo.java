@@ -14,12 +14,12 @@ public class Atributo {
     /**
      * Cantidad de caracteres en nombre
      */
-    private static int cantidadCaracteres = 25;
+    public static int cantidadCaracteres = 25;
     
     /**
      * Tamaño del registro del atributo.
      */
-    private static int SIZE = (4 * Integer.BYTES) + (Character.BYTES * cantidadCaracteres);
+    public static int SIZE = (4 * Integer.BYTES) + (Character.BYTES * cantidadCaracteres);
     
     /**
      * Indice del atributo.
@@ -58,21 +58,7 @@ public class Atributo {
      */
     public static void setCantidadCaracteres(int aCantidadCaracteres) {
         cantidadCaracteres = aCantidadCaracteres;
-    }
-
-    /**
-     * @return the SIZE
-     */
-    public static int getSIZE() {
-        return SIZE;
-    }
-
-    /**
-     * @param aSIZE the SIZE to set
-     */
-    public static void setSIZE(int aSIZE) {
-        SIZE = aSIZE;
-    }
+    }   
 
     /**
      * @return the indice
@@ -146,31 +132,21 @@ public class Atributo {
     
     public static String getTipoToString(Integer tipo) {
         switch(tipo) {
-            case 1:
+            case 0:
                 return "String";
-            case 2:
+            case 1:
                 return "Date";
-            case 3:
+            case 2:
                 return "Double";
-            case 4:
+            case 3:
                 return "Integer";
         }
         return "Undefined";
-    }
+    }    
     
-    public static Integer getTipoToInteger(String tipo) {
-        if (tipo.equals("String")) {
-            return 1;
-        }else if (tipo.equals("String")) {
-            return 1;
-        }else if (tipo.equals("Date")) {
-            return 2;
-        }else if (tipo.equals("Double")) {
-            return 3;
-        }else if (tipo.equals("Integer")) {
-            return 4;
-        }
-        return -1;
+    @Override
+    public String toString() {
+        return "Atributo[" + "indice: " + this.indice + ", nombre:" + this.nombre + ", tipo: " + this.tipo + ", longitud: " + this.longitud + ", entidad: " + this.entidad;
     }
     
 }
