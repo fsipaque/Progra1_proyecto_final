@@ -5,6 +5,8 @@
  */
 package proyecto1.jfperez.progra1_pro_final;
 
+import java.util.List;
+
 /**
  *
  * @author josep
@@ -30,6 +32,11 @@ public class Entidad {
      * Nombre de la entidad.
      */
     private String nombre;
+    
+    /**
+     * Listado de atributos asociados a la entidad.
+     */
+    private List<Atributo> atributos;
 
     /**
      * @return the indice
@@ -58,4 +65,20 @@ public class Entidad {
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
+
+    /**
+     * @return the atributos
+     */
+    public List<Atributo> getAtributos() {
+        return atributos;
+    }
+
+    /**
+     * @param atributos the atributos to set
+     */
+    public void setAtributos(List<Atributo> atributos) {
+        this.atributos = atributos;
+    }
+    
+    
 }

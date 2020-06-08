@@ -5,6 +5,7 @@
  */
 package proyecto1.jfperez.progra1_pro_final;
 
+import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -20,12 +21,22 @@ public class Principal extends javax.swing.JFrame {
     ManejoEntidad manejoEntidad;
     
     /**
+     * Atributo para manejo de atributos
+     */
+    ManejoAtributo manejoAtributo;
+    
+    /**
      * Modelo de tabla de entidades.
      */
     DefaultTableModel modelEntidad;
     
     /**
-     * Atributo de entidad utilizado al seleccionar de tabla.
+     * Model de tabla de atributos.
+     */
+    DefaultTableModel modelAtributo;
+    
+    /**
+     * Campo de entidad utilizado al seleccionar de tabla.
      */
     Entidad entidad;
     
@@ -35,13 +46,26 @@ public class Principal extends javax.swing.JFrame {
     Integer rowEntidad;
 
     /**
+     * Campo de atributo utilizado al seleccionar de tabla.
+     */
+    Atributo atributo;
+    
+    /**
+     * Indice de atributo seleccionado.
+     */
+    Integer rowAtributo;
+    
+    /**
      * Creates new form Principal
      */
     public Principal() {
         initComponents();
         modelEntidad = (DefaultTableModel) this.tblEntidades.getModel();
+        modelAtributo = (DefaultTableModel) this.tblAtributos.getModel();
         manejoEntidad = new ManejoEntidad();
+        manejoAtributo = new ManejoAtributo();
         manejoEntidad.listar();
+        manejoAtributo.listar();
         for(Entidad entidad: manejoEntidad.getEntidades()) {
             if (entidad.getIndice() != -1) {
                 modelEntidad.addRow(new Object[]{entidad.getIndice(), entidad.getNombre()});            
@@ -49,11 +73,36 @@ public class Principal extends javax.swing.JFrame {
         }
     }
     
+    /**
+     * Limpiar datos de entidad
+     */
     public void limpiarEntidad() {
         this.txtNombreEntidad.setText("");
         this.entidad = null;
+        this.btnEliminarEntidad.setEnabled(false);
+    }
+    
+    /**
+     * Limpiar datos de atributo.
+     */
+    public void limpiarAtributo() {
+        this.txtNombreAtributo.setText("");
+        this.cmbTipoDato.setSelectedItem(null);
+        this.txtLongitud.setText("");
+        this.atributo = null;
+        this.btnEliminarAtributo.setEnabled(false);
     }
 
+    private void setAtributos() {
+        List<Atributo> attrs = this.manejoAtributo.obtenerPorEntidad(this.entidad.getIndice());
+        this.entidad.setAtributos(attrs);
+        for (Atributo atributo: attrs) {
+            if (atributo.getIndice() != -1) {
+                modelAtributo.addRow(new Object[] {atributo.getIndice(), atributo.getNombre(), Atributo.getTipoToString(atributo.getTipo()), atributo.getLongitud()});
+            }
+        }
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -209,13 +258,28 @@ public class Principal extends javax.swing.JFrame {
 
         jLabel7.setText("Longitud");
 
-        cmbTipoDato.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cmbTipoDato.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "String", "Date", "Double", "Integer" }));
 
         btnGuardarAtributo.setText("Guardar");
+        btnGuardarAtributo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGuardarAtributoActionPerformed(evt);
+            }
+        });
 
         btnEliminarAtributo.setText("Eliminar");
+        btnEliminarAtributo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEliminarAtributoActionPerformed(evt);
+            }
+        });
 
         btnLimpiarAtributo.setText("Limpiar");
+        btnLimpiarAtributo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLimpiarAtributoActionPerformed(evt);
+            }
+        });
 
         tblAtributos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -300,8 +364,8 @@ public class Principal extends javax.swing.JFrame {
                 .addContainerGap(343, Short.MAX_VALUE))
             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel2Layout.createSequentialGroup()
-                    .addGap(117, 117, 117)
-                    .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(134, 134, 134)
+                    .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addContainerGap(177, Short.MAX_VALUE)))
         );
 
@@ -381,7 +445,7 @@ public class Principal extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Nombre de entidad obligatoria");
         } else {
             if (this.txtNombreEntidad.getText().length() > Entidad.cantidadCaracteres ){
-                JOptionPane.showMessageDialog(this, "Nombre de entidad debe de ser menor a 200 caracteres.");
+                JOptionPane.showMessageDialog(this, "Nombre de entidad debe de ser menor a 25 caracteres.");
             } else {
                 if (this.entidad == null) { // registro nuevo
                     this.entidad = new Entidad();
@@ -399,8 +463,7 @@ public class Principal extends javax.swing.JFrame {
                         this.modelEntidad.setValueAt(this.txtNombreEntidad.getText(), this.rowEntidad, 1); // Nombre
                         this.limpiarEntidad();
                     }
-                    JOptionPane.showMessageDialog(this, mensaje);
-                    this.limpiarEntidad();
+                    JOptionPane.showMessageDialog(this, mensaje);                    
                 }
             }
         }
@@ -426,11 +489,71 @@ public class Principal extends javax.swing.JFrame {
         this.rowEntidad = this.tblEntidades.rowAtPoint(evt.getPoint());
         this.entidad = this.manejoEntidad.obtener((Integer)this.tblEntidades.getValueAt(rowEntidad,0));
         this.txtNombreEntidad.setText(this.entidad.getNombre());
+        this.limpiarAtributo();
+        this.setAtributos();
+        this.btnEliminarEntidad.setEnabled(true);        
     }//GEN-LAST:event_tblEntidadesMouseClicked
 
     private void tblAtributosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblAtributosMouseClicked
         // TODO add your handling code here:
+        this.rowAtributo = this.tblAtributos.rowAtPoint(evt.getPoint());
+        this.atributo = this.manejoAtributo.obtener((Integer)this.tblAtributos.getValueAt(rowEntidad,0));      
+        this.txtNombreEntidad.setText(this.entidad.getNombre());                
+        this.cmbTipoDato.setSelectedItem((String) Atributo.getTipoToString(this.atributo.getTipo()));
+        this.txtLongitud.setText(this.atributo.getLongitud().toString());
+        this.btnEliminarAtributo.setEnabled(true);
     }//GEN-LAST:event_tblAtributosMouseClicked
+
+    private void btnGuardarAtributoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarAtributoActionPerformed
+        // TODO add your handling code here:
+        if (this.txtNombreAtributo.getText().equals("") || this.cmbTipoDato == null || this.txtLongitud.equals("")) {
+            JOptionPane.showMessageDialog(this, "Todos los campos son obligatorios.");
+        } else {
+            if (this.txtNombreEntidad.getText().length() > Entidad.cantidadCaracteres ){
+                JOptionPane.showMessageDialog(this, "Nombre de entidad debe de ser menor a 25 caracteres.");
+            } else {
+                if (this.atributo == null) { // registro nuevo
+                    this.atributo = new Atributo();
+                    this.atributo.setNombre(this.txtNombreAtributo.getText());
+                    this.atributo.setTipo(Atributo.getTipoToInteger(this.cmbTipoDato.getSelectedItem().toString()));
+                    this.atributo.setLongitud(Integer.parseInt(this.txtLongitud.getText()));
+                    this.atributo.setEntidad(this.entidad.getIndice());
+                    String mensaje = this.manejoAtributo.guardar(this.atributo);
+                    if (this.manejoAtributo.getAtributo() != null) {
+                        modelAtributo.addRow(new Object[]{this.atributo.getIndice(), this.atributo.getNombre(), Atributo.getTipoToString(this.atributo.getTipo()), this.atributo.getLongitud()});
+                        this.limpiarAtributo();
+                    }
+                    JOptionPane.showMessageDialog(this, mensaje);                    
+                } else { // actualizar registro
+                    this.atributo.setNombre(this.txtNombreAtributo.getText());
+                    this.atributo.setTipo(Atributo.getTipoToInteger(this.cmbTipoDato.getSelectedItem().toString()));
+                    this.atributo.setLongitud(Integer.parseInt(this.txtLongitud.getText()));
+                    this.atributo.setEntidad(this.entidad.getIndice());
+                    String mensaje = this.manejoAtributo.guardar(this.atributo);
+                    if (this.manejoAtributo.getAtributo() != null) {
+                        modelAtributo.addRow(new Object[]{this.atributo.getIndice(), this.atributo.getNombre(), Atributo.getTipoToString(this.atributo.getTipo()), this.atributo.getLongitud()});
+                        this.limpiarAtributo();
+                    }
+                    JOptionPane.showMessageDialog(this, mensaje);
+                }
+            }
+        }
+    }//GEN-LAST:event_btnGuardarAtributoActionPerformed
+
+    private void btnLimpiarAtributoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarAtributoActionPerformed
+        // TODO add your handling code here:
+        this.limpiarAtributo();
+    }//GEN-LAST:event_btnLimpiarAtributoActionPerformed
+
+    private void btnEliminarAtributoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarAtributoActionPerformed
+        // TODO add your handling code here:
+        String mensaje = this.manejoAtributo.eliminar(this.atributo.getIndice());
+        if (this.manejoAtributo.getAtributo() != null) {
+            //Eliminado correctamente
+            this.modelAtributo.removeRow(this.rowAtributo);
+        }
+        JOptionPane.showMessageDialog(this, mensaje);
+    }//GEN-LAST:event_btnEliminarAtributoActionPerformed
 
     /**
      * @param args the command line arguments
