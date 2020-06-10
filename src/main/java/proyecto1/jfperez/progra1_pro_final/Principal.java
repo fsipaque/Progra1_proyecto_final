@@ -5,8 +5,11 @@
  */
 package proyecto1.jfperez.progra1_pro_final;
 
+import java.awt.BorderLayout;
 import java.util.List;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+import javax.swing.JLabel;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -21,9 +24,14 @@ public class Principal extends javax.swing.JFrame {
     ManejoEntidad manejoEntidad;
     
     /**
-     * Atributo para manejo de atributos
+     * Atributo para manejo de atributos.
      */
     ManejoAtributo manejoAtributo;
+    
+    /**
+     * Atributo para manejo de registros.
+     */
+    ManejoRegistro manejoRegistro;
     
     /**
      * Modelo de tabla de entidades.
@@ -64,6 +72,7 @@ public class Principal extends javax.swing.JFrame {
         modelAtributo = (DefaultTableModel) this.tblAtributos.getModel();
         manejoEntidad = new ManejoEntidad();
         manejoAtributo = new ManejoAtributo();
+        manejoRegistro = new ManejoRegistro();
         manejoEntidad.listar();
         manejoAtributo.listar();
         for(Entidad entidad: manejoEntidad.getEntidades()) {
@@ -93,6 +102,9 @@ public class Principal extends javax.swing.JFrame {
         this.btnEliminarAtributo.setEnabled(false);
     }
 
+    /**
+     * Asignar atributos a la entidad.
+     */
     private void setAtributos() {
         List<Atributo> attrs = this.manejoAtributo.obtenerPorEntidad(this.entidad.getIndice());        
         modelAtributo.getDataVector().removeAllElements();
@@ -103,6 +115,78 @@ public class Principal extends javax.swing.JFrame {
                 modelAtributo.addRow(new Object[] {atributo.getIndice(), atributo.getNombre(), Atributo.getTipoToString(atributo.getTipo()), atributo.getLongitud()});
             }
         }
+    }
+    
+    /**
+     * Dibujar en panel atributos.
+     */
+    private void dibujarAtributos() {
+        Integer posInicial = 0;       
+        this.manejoRegistro.getComponentes().clear();
+        this.pnlRegistros.setVisible(false);                
+        this.pnlRegistros.removeAll();
+        this.pnlRegistros.setLayout(null);        
+        javax.swing.JTable tblRegistros = new javax.swing.JTable();        
+        DefaultTableModel model = new DefaultTableModel();        
+        for(Atributo atributo: this.entidad.getAtributos()) {
+            if(atributo.getIndice() != -1) { // Si no está eliminado                
+                if (atributo.getTipo() == 0) { //String
+                    JLabel lbl = new JLabel(atributo.getNombre());
+                    this.pnlRegistros.add(lbl);
+                    lbl.setBounds(5, posInicial, 300, 25);
+                    JTextField txt = new JTextField("Cadena de texto", atributo.getLongitud());
+                    this.pnlRegistros.add(txt);
+                    txt.setBounds(150, posInicial, 300, 25);
+                    this.manejoRegistro.getComponentes().add(txt);
+                    model.addColumn(atributo.getNombre());
+                }
+                if (atributo.getTipo() == 1) { //Fecha
+                    JLabel lbl = new JLabel(atributo.getNombre());
+                    this.pnlRegistros.add(lbl);
+                    lbl.setBounds(5, posInicial, 300, 25);
+                    JTextField txt = new JTextField("Fecha: dd/mm/yyyy", atributo.getLongitud());
+                    this.pnlRegistros.add(txt);
+                    txt.setBounds(150, posInicial, 300, 25);
+                    this.manejoRegistro.getComponentes().add(txt);
+                    model.addColumn(atributo.getNombre());
+                }
+                if (atributo.getTipo() == 2) { //Double
+                    JLabel lbl = new JLabel(atributo.getNombre());
+                    this.pnlRegistros.add(lbl);
+                    lbl.setBounds(5, posInicial, 300, 25);
+                    JTextField txt = new JTextField("Número decimal", atributo.getLongitud());
+                    this.pnlRegistros.add(txt);
+                    txt.setBounds(150, posInicial, 300, 25);
+                    this.manejoRegistro.getComponentes().add(txt);
+                    model.addColumn(atributo.getNombre());
+                }
+                if (atributo.getTipo() == 3) { //String
+                    JLabel lbl = new JLabel(atributo.getNombre());
+                    this.pnlRegistros.add(lbl);
+                    lbl.setBounds(5, posInicial, 300, 25);
+                    JTextField txt = new JTextField("Número entero", atributo.getLongitud());
+                    this.pnlRegistros.add(txt);
+                    txt.setBounds(150, posInicial, 300, 25);
+                    this.manejoRegistro.getComponentes().add(txt);
+                    model.addColumn(atributo.getNombre());
+                }
+                posInicial += 25;
+            }                     
+        }
+                
+        posInicial += 25;
+        tblRegistros.setModel(model);
+        this.pnlRegistros.add(tblRegistros);
+        tblRegistros.setBounds(5, posInicial, 525, 500);
+            
+        this.pack();
+        this.pnlRegistros.setVisible(true);
+    }
+    
+    /**
+     * Cargar registros de archivo.
+     */
+    private void cargarRegistros() {
     }
     
     /**
@@ -144,6 +228,7 @@ public class Principal extends javax.swing.JFrame {
         btnGuardarRegistro = new javax.swing.JButton();
         btnEliminarRegistro = new javax.swing.JButton();
         btnLimpiarRegistro = new javax.swing.JButton();
+        pnlRegistros = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Mantenimiento");
@@ -383,20 +468,34 @@ public class Principal extends javax.swing.JFrame {
 
         btnLimpiarRegistro.setText("Limpiar");
 
+        javax.swing.GroupLayout pnlRegistrosLayout = new javax.swing.GroupLayout(pnlRegistros);
+        pnlRegistros.setLayout(pnlRegistrosLayout);
+        pnlRegistrosLayout.setHorizontalGroup(
+            pnlRegistrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        pnlRegistrosLayout.setVerticalGroup(
+            pnlRegistrosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 532, Short.MAX_VALUE)
+        );
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel3)
-                .addGap(32, 32, 32)
-                .addComponent(btnGuardarRegistro)
-                .addGap(37, 37, 37)
-                .addComponent(btnEliminarRegistro)
-                .addGap(40, 40, 40)
-                .addComponent(btnLimpiarRegistro)
-                .addContainerGap(114, Short.MAX_VALUE))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(pnlRegistros, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addGap(32, 32, 32)
+                        .addComponent(btnGuardarRegistro)
+                        .addGap(37, 37, 37)
+                        .addComponent(btnEliminarRegistro)
+                        .addGap(40, 40, 40)
+                        .addComponent(btnLimpiarRegistro)
+                        .addContainerGap(168, Short.MAX_VALUE))))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -407,7 +506,9 @@ public class Principal extends javax.swing.JFrame {
                     .addComponent(btnGuardarRegistro)
                     .addComponent(btnEliminarRegistro)
                     .addComponent(btnLimpiarRegistro))
-                .addContainerGap(549, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(pnlRegistros, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         jScrollPane3.setViewportView(jPanel3);
@@ -418,11 +519,11 @@ public class Principal extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 583, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 583, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 456, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 556, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -498,6 +599,8 @@ public class Principal extends javax.swing.JFrame {
         this.btnEliminarEntidad.setEnabled(archivoVacio);
         this.btnGuardarAtributo.setEnabled(archivoVacio);
         this.btnEliminarAtributo.setEnabled(archivoVacio);
+        this.dibujarAtributos();
+        this.cargarRegistros();
     }//GEN-LAST:event_tblEntidadesMouseClicked
 
     private void tblAtributosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblAtributosMouseClicked
@@ -626,6 +729,7 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
+    private javax.swing.JPanel pnlRegistros;
     private javax.swing.JTable tblAtributos;
     private javax.swing.JTable tblEntidades;
     private javax.swing.JTextField txtLongitud;

@@ -240,8 +240,6 @@ public class ManejoAtributo {
     public List<Atributo> obtenerPorEntidad(Integer entidad) {        
         List<Atributo> resultado = new ArrayList();
         for(Atributo atributo: this.atributos){        
-            System.out.println("*************");
-            System.out.println(atributo);
             if (atributo.getEntidad().equals(entidad)){                
                 resultado.add(atributo);
             }
